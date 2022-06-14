@@ -2,7 +2,7 @@ const { Router } = require("express");
 const auth = require("../auth/middleware");
 const User = require("../models").user;
 const Profile = require("../models").profile;
-const Like = require("../models").like;
+const Favorite = require("../models").favorite;
 
 const router = new Router();
 
@@ -26,7 +26,7 @@ router.get("/:id", async (req, res) => {
     return res.status(400).send({ message: "Profile id is not a number" });
   }
 
-  const profile = await Profile.findByPk(id, { include: [Like] });
+  const profile = await Profile.findByPk(id, { include: [Favorite] });
 
   if (profile === null) {
     return res.status(404).send({ message: "Profile not found" });
@@ -64,6 +64,31 @@ router.post("/", auth, async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+});
+
+// POST FAVORITE
+
+router.post("/:id/favorite", auth, async (req, res) => {
+  const profile = await Profile.findByPk(req.params.id, { include: Favorite });
+  const user = req.user;
+
+  if (profile === null) {
+    return res.status(404).send({ message: "This profile does not exist" });
+  }
+
+  if (!profile.userId === req.userId) {
+    return res
+      .status(403)
+      .send({ message: "You are not authorized to update this profile" });
+  }
+
+  const favorite = await Favorite.create({
+    profileId: profile.id,
+  });
+
+  return res
+    .status(201)
+    .send({ message: "Profile is added to favorites", favorite });
 });
 
 module.exports = router;
