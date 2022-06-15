@@ -68,27 +68,33 @@ router.post("/", auth, async (req, res, next) => {
 
 // POST FAVORITE
 
-router.post("/:id/favorite", auth, async (req, res) => {
-  const profile = await Profile.findByPk(req.params.id, { include: Favorite });
-  const user = req.user;
+router.post("/favorites", auth, async (req, res, next) => {
+  try {
+    const { userId, profileId } = req.body;
+    console.log("userId", "profileId", userId, profileId);
 
-  if (profile === null) {
-    return res.status(404).send({ message: "This profile does not exist" });
+    const specificFavs = await Favorite.findOne({
+      where: { userId, profileId },
+    });
+    const profile = await Profile.findByPk(parseInt(profileId));
+    if (!specificFavs) {
+      const favs = await Favorite.create({
+        userId,
+        profileId,
+      });
+      res.send(profile);
+    } else {
+      const deleteFavs = await specificFavs.destroy();
+      res.send(profile);
+    }
+
+    // check if this combo already exists in favs
+
+    // if it does, delete
+
+    // if not, add.
+  } catch (e) {
+    next(e);
   }
-
-  if (!profile.userId === req.userId) {
-    return res
-      .status(403)
-      .send({ message: "You are not authorized to update this profile" });
-  }
-
-  const favorite = await Favorite.create({
-    profileId: profile.id,
-  });
-
-  return res
-    .status(201)
-    .send({ message: "Profile is added to favorites", favorite });
 });
-
 module.exports = router;
