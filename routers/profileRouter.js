@@ -26,7 +26,7 @@ router.get("/:id", async (req, res) => {
     return res.status(400).send({ message: "Profile id is not a number" });
   }
 
-  const profile = await Profile.findByPk(id, { include: [Favorite] });
+  const profile = await Profile.findByPk(id, { model: User, as: "fav" });
 
   if (profile === null) {
     return res.status(404).send({ message: "Profile not found" });
