@@ -39,11 +39,28 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", auth, async (req, res, next) => {
   try {
-    const { name, age, gender, imageUrl, about, language, location, userId } =
-      req.body;
+    const {
+      name,
+      age,
+      gender,
+      imageUrl,
+      about,
+      language,
+      location,
+      githubUrl,
+      userId,
+    } = req.body;
     const user = req.user;
 
-    if (!name || !age || !gender || !imageUrl || !about || !location) {
+    if (
+      !name ||
+      !age ||
+      !gender ||
+      !imageUrl ||
+      !about ||
+      !location ||
+      !githubUrl
+    ) {
       res.status(400).send("missing parameters");
     }
     if (user) {
@@ -55,6 +72,7 @@ router.post("/", auth, async (req, res, next) => {
         about,
         language,
         location,
+        githubUrl,
         userId: user.id,
       });
       res.send({ message: "Profile created", newProfileId: newProfile.id });
