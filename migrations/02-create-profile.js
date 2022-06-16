@@ -36,6 +36,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      githubUrl: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       userId: {
         type: Sequelize.INTEGER,
         allowNull: false,

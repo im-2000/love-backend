@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       about: { type: DataTypes.TEXT, allowNull: false },
       language: { type: DataTypes.STRING, allowNull: false },
       location: { type: DataTypes.STRING, allowNull: false },
+      githubUrl: { type: DataTypes.STRING, allowNull: false },
       userId: { type: DataTypes.INTEGER, allowNull: false },
     },
     {
